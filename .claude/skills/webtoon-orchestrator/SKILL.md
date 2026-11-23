@@ -9,7 +9,9 @@ description: "웹툰 제작 에이전트 팀(27명)을 조율하는 메인 오�
 
 ## 실행 모드: 에이전트 팀 (단계별 재구성)
 
-세션당 활성 팀은 1개뿐이므로, 각 Phase마다 `TeamCreate`로 팀을 만들고 작업이 끝나면 `TeamDelete`로 정리한 뒤 다음 Phase 팀을 만든다. 이전 팀의 산출물은 `_workspace/`에 남아 다음 팀이 Read로 이어받는다. 모든 팀원 스폰과 Agent 호출에 **`model: "opus"`**를 명시한다.
+> **이 프로젝트(wtoon)에서는 루트의 `CLAUDE.md`가 우선한다.** 클라우드 환경엔 TeamCreate/TeamDelete/SendMessage가 없으므로 각 Phase의 팀원을 Agent 도구 서브에이전트(`subagent_type`=에이전트 이름, `model: "opus"`)로 의존 순서대로 호출하고, 독립 작업은 한 번에 병렬 호출한다. 팀원 간 SendMessage는 "파일로 남기고 최종 보고에 요지를 적어 반환"으로 대체하며, 오케스트레이터가 다음 호출 프롬프트에 경로와 요지를 넣어 넘긴다. codex가 필요한 단계(레퍼런스 시트·패널 렌더·검증 루프)는 **이미지 생성 전용 스레드**에서만 실행한다. 아래 [작가님 확인] 표시 지점에서는 멈추고 승인을 받는다.
+
+(원문) 세션당 활성 팀은 1개뿐이므로, 각 Phase마다 `TeamCreate`로 팀을 만들고 작업이 끝나면 `TeamDelete`로 정리한 뒤 다음 Phase 팀을 만든다. 이전 팀의 산출물은 `_workspace/`에 남아 다음 팀이 Read로 이어받는다. 모든 팀원 스폰과 Agent 호출에 **`model: "opus"`**를 명시한다.
 
 ## 에이전트 구성 (27명, 4팀)
 
@@ -61,6 +63,7 @@ description: "웹툰 제작 에이전트 팀(27명)을 조율하는 메인 오�
 1. 사용자 입력 분석 — 회차 번호 {NN}, 장르 방향(있으면), 제약(수위·길이·톤).
 2. `_workspace/00_input/brief.md`에 입력·회차 번호·제약을 기록.
 3. 작업 디렉토리 보장: `mkdir -p _workspace/{00_input,01_research,02_story,03_episode,04_visual,05_panels,06_assembly,RELEASE}`.
+4. **공유 폴더 동기화(wtoon)**: 시작 시 `/mnt/project-files/wtoon/_workspace/`를 로컬 `_workspace/`로 내려받고, 이후 **각 Phase가 끝날 때마다** 로컬을 공유 폴더로 올린다(명령은 CLAUDE.md §2). Phase 0의 `_workspace/` 존재 판단도 공유 폴더 기준으로 한다.
 
 ### Phase 2: 트렌드 리서치 (리서치팀)
 
@@ -82,6 +85,8 @@ description: "웹툰 제작 에이전트 팀(27명)을 조율하는 메인 오�
 4. **50+ 패널 분량 확보**: episode-outliner가 비트를 충분히 쪼개 50패널 이상 분량을 만든다.
 5. 산출물: `02_story/*`, `03_episode/ep{NN}_script_final.md`.
 6. `TeamDelete`로 정리.
+7. **[작가님 확인 1 — 기획]** 초기/새 기획 실행이면 concept·characters·series-arc 확정 직후(beatsheet 착수 전) 로그라인·주요 캐릭터·시리즈 엔진·이번 화 반전 한 줄을 보여 주고 승인을 받는다. 드라이브 `Wtoon/00_기획/`에 사본을 올린다.
+8. **[작가님 확인 2 — 대본]** `ep{NN}_script_final.md` 완성 후 회차 줄거리 5줄·반전·클리프행어·예상 패널 수를 보여 주고 승인을 받는다. 드라이브 `Wtoon/ep{NN}/script_final.md`에 올린다.
 
 ### Phase 4: 비주얼 프로덕션 (비주얼팀)
 
@@ -89,7 +94,8 @@ description: "웹툰 제작 에이전트 팀(27명)을 조율하는 메인 오�
 
 1. `TeamCreate(team_name: "webtoon-visual", members: [art-director, ref-sheet-artist, panel-director, letterer, prompt-smith, panel-artist-a, panel-artist-b, panel-artist-c, panel-validator])`.
 2. **아트 디렉션**: art-director가 `style-bible.md`(작화·**장소 토큰 LOC_***·**말풍선 시각 규약** 포함) + `character-sheets.md`(일관성 토큰+레퍼런스 사양)를 만들고 팀에 공유.
-3. **레퍼런스 시트 먼저(일관성 SSOT)**: ref-sheet-artist가 주요 캐릭터의 다각도/표정 레퍼런스를 codex로 렌더(동시 ≤5) → `04_visual/refs/`에 확정 → INDEX.md를 prompt-smith·panel-validator에 인계. **패널 렌더는 레퍼런스 확정 후 시작.** (후속 회차는 기존 refs/ 재사용.)
+3. **레퍼런스 시트 먼저(일관성 SSOT)**: ref-sheet-artist가 주요 캐릭터의 다각도/표정 레퍼런스를 codex로 렌더(동시 ≤5) → `04_visual/refs/`에 확정 → INDEX.md를 prompt-smith·panel-validator에 인계. **패널 렌더는 레퍼런스 확정 후 시작.** (후속 회차는 기존 refs/ 재사용.) **[작가님 확인 3 — 레퍼런스]** refs/를 드라이브 `Wtoon/refs/`에 올리고 승인을 받은 뒤 패널 렌더로 간다(후속 회차는 신규 캐릭터만).
+   - **스레드 분담(wtoon)**: 2·4·5(글 작업)는 회차 제작 스레드, 3·6·7(codex 작업)은 이미지 생성 전용 스레드가 맡는다. 회차 제작 스레드는 `ep{NN}_prompts.md`까지 공유 폴더에 올리고 이미지 스레드에 넘기며, 이미지 스레드는 `validation.md` 완료 후 공유 폴더·드라이브 `Wtoon/ep{NN}/`에 올리고 돌려준다.
 4. **콘티+레터링 병렬**: panel-director가 `ep{NN}_shotlist.md`(50+ 패널, 각 패널 scene_id/location), letterer가 `ep{NN}_lettering.md`(in-image 말풍선 베이크 명세, 한글 짧게)를 병렬 작성.
 5. **프롬프트 합성**: prompt-smith가 [스타일+장소토큰+캐릭터토큰&레퍼런스앵커+구도/상태색+말풍선/한글 베이크]를 합성한 `ep{NN}_prompts.md`를 만들고 scene 그룹 A/B/C 분배. **`no text` 금지(말풍선을 그려야 함)**, 부정은 `no English/gibberish/misspelled text`.
 6. **렌더링 (동시성 핵심)**: 패널을 5장씩 배치로 렌더. panel-artist 3명이어도 **codex exec 동시 실행 총합 ≤ 5**. 리더가 렌더 패스를 순차 디스패치하거나 단일 드라이버(`scripts/codex_imagegen_batch.sh` 또는 회차 렌더 스크립트)로 5장씩 자동 배치. 50패널 ≈ 10웨이브.
@@ -108,6 +114,7 @@ description: "웹툰 제작 에이전트 팀(27명)을 조율하는 메인 오�
 5. continuity-manager가 `continuity.md`를 갱신(회차 간 외형/설정/떡밥).
 6. showrunner가 사인오프 후 `RELEASE/ep{NN}/`에 최종 패키징 + 다음 회차 시드(클리프행어 이어받기) 제안.
 7. `TeamDelete`로 정리.
+8. **[작가님 확인 4 — 완성본]** `RELEASE/ep{NN}/`를 드라이브 `Wtoon/RELEASE/ep{NN}/`에 올리고 링크와 ACCEPT-FLAG 패널 목록을 보여 준다.
 
 ### Phase 6: 마무리
 

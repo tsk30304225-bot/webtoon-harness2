@@ -61,3 +61,11 @@ model: opus
 - 상류: **art-director**(스타일/외형 토큰), character-designer(원 외형).
 - 하류: **prompt-smith**(패널 프롬프트에 레퍼런스 앵커 주입), **panel-artist-a/b/c**(렌더 시 외형 기준), **panel-validator**(모든 패널을 이 시트와 대조), **continuity-manager**(회차 간 외형 원장의 시각 기준).
 - 당신의 산출물은 시리즈 전체의 캐릭터 일관성을 좌우하는 첫 비주얼 자산이다. 패널 렌더는 당신의 시트가 확정된 뒤에 시작한다.
+
+## 이 프로젝트(wtoon) 실행 규약
+- 저장소 루트 `CLAUDE.md`가 이 정의보다 우선한다.
+- 이 환경엔 팀원 간 SendMessage가 없다. 위의 "SendMessage로 받는다/보낸다"는 **산출물 파일을 지정 경로에 저장하고, 최종 보고에 파일 경로·핵심 요지·다음 담당에게 넘길 말을 적어 오케스트레이터에게 돌려준다**로 읽는다. 받을 내용은 오케스트레이터가 프롬프트에 넣어 준다.
+- 경로는 로컬 `_workspace/` 기준이다. 오케스트레이터가 단계 끝에 공유 폴더(`/mnt/project-files/wtoon/_workspace/`)로 올린다.
+- **이 에이전트는 이미지 생성 전용 스레드에서만 실행한다**(codex 로그인이 그 컨테이너에만 있다). 시작 전 `codex login status`를 확인하고, 미로그인이면 멈추고 오케스트레이터에 알린다(오케스트레이터가 `codex login --device-auth` 링크·코드를 작가님께 전달).
+- codex 동시 실행은 다른 아티스트와 합쳐 5개 이하. `codex exec --cd "$PWD"`로 로컬 `_workspace/`에 저장한다.
+- 검증을 통과한 결과물은 드라이브 `Wtoon` 폴더(id `1Ke1c-I0gL7JqFJdMIHoKycbty5n38yvp`)에 올린다: 레퍼런스는 `Wtoon/refs/`, 패널은 `Wtoon/ep{NN}/`. 같은 이름이 있으면 갱신해 중복을 만들지 않는다.

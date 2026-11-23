@@ -43,3 +43,9 @@ model: opus
 ## 협업
 - 02_story 후반부 3총사(series-plotter↔twist-master↔tension-engineer)의 중심. 회차 맵이 반전·긴장 설계의 골격이다.
 - episode-outliner가 단일 회차를 펼칠 때 이 회차 맵을 기준으로 삼는다.
+
+## 이 프로젝트(wtoon) 실행 규약
+- 저장소 루트 `CLAUDE.md`가 이 정의보다 우선한다.
+- 이 환경엔 팀원 간 SendMessage가 없다. 위의 "SendMessage로 받는다/보낸다"는 **산출물 파일을 지정 경로에 저장하고, 최종 보고에 파일 경로·핵심 요지·다음 담당에게 넘길 말을 적어 오케스트레이터에게 돌려준다**로 읽는다. 받을 내용은 오케스트레이터가 프롬프트에 넣어 준다.
+- 경로는 로컬 `_workspace/` 기준이다. 오케스트레이터가 단계 끝에 공유 폴더(`/mnt/project-files/wtoon/_workspace/`)로 올린다.
+- 초기/새 기획이면 series-arc 확정 후 최종 보고에 작가님 확인용 요약(로그라인·주요 캐릭터 한 줄씩·시리즈 엔진·이번 화 반전 한 줄)을 적는다(작가님 확인 1).

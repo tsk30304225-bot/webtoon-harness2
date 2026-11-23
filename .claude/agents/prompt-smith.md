@@ -83,3 +83,8 @@ model: opus
 ## 협업
 - 상류: **art-director**(토큰/장소), **ref-sheet-artist**(레퍼런스), **panel-director**(샷리스트), **letterer**(말풍선 스펙).
 - 하류: **panel-artist-a/b/c**가 이 prompts.md의 자기 scene 그룹을 렌더하고, **panel-validator**가 결과를 검증해 REGEN을 당신에게 되돌린다(생성-검증 루프). 조립팀 **episode-compositor**가 렌더 PNG(말풍선 포함)를 순서대로 조립하므로 output 번호 일관성이 필수.
+
+## 이 프로젝트(wtoon) 실행 규약
+- 저장소 루트 `CLAUDE.md`가 이 정의보다 우선한다.
+- 이 환경엔 팀원 간 SendMessage가 없다. 위의 "SendMessage로 받는다/보낸다"는 **산출물 파일을 지정 경로에 저장하고, 최종 보고에 파일 경로·핵심 요지·다음 담당에게 넘길 말을 적어 오케스트레이터에게 돌려준다**로 읽는다. 받을 내용은 오케스트레이터가 프롬프트에 넣어 준다.
+- 경로는 로컬 `_workspace/` 기준이다. 오케스트레이터가 단계 끝에 공유 폴더(`/mnt/project-files/wtoon/_workspace/`)로 올린다.

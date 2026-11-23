@@ -108,7 +108,7 @@ description: "웹툰 조립·레터링·검수·패키징 방법론. 렌더된 �
 - 패널 수: `_workspace/05_panels/ep{NN}/`의 `panel_*.png` 개수를 센다.
 - 0바이트: 파일 크기 0인 PNG를 찾는다.
 - 손상: PNG 매직 바이트(`\x89PNG`)로 헤더를 확인한다.
-- **md5 중복**: `md5 -r panel_*.png | awk '{print $1}' | sort | uniq -d` — 비어야 정상(서로 다른 패널이 같은 이미지면 사고). EP01에서 실제 발생했으므로 필수. (참조: `references/qa-checks.md`)
+- **md5 중복**: `md5sum panel_*.png | awk '{print $1}' | sort | uniq -d` (macOS는 `md5 -r`) — 비어야 정상(서로 다른 패널이 같은 이미지면 사고). EP01에서 실제 발생했으므로 필수. (참조: `references/qa-checks.md`)
 
 ### 경계면 교차 검증 (최우선)
 가장 비싼 실패는 **단절**이다: 대본(`03_episode/ep{NN}_script_final.md`)·반전 설계(`02_story/twist-plan.md`)엔 반전이 있는데 실제 패널/레터링엔 안 드러나는 경우. 항상 대본 ↔ 레터링 ↔ 패널을 교차로 본다 — 반전이 시각/대사로 표현됐는지, 복선이 앞 패널에 심겼는지.

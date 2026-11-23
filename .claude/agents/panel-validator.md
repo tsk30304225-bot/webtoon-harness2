@@ -81,3 +81,11 @@ EP01에서 13장(P30·P33 + P9·10·14·27·31·35·36·40·43·54·57)이 "한�
 - 상류: **ref-sheet-artist**(기준), **panel-artist-a/b/c**(렌더), **prompt-smith**(프롬프트).
 - 하류: **quality-reviewer**(끝단 회차 QA — 당신이 패널 단위로 거른 뒤라 회차 전체 흐름·반전 전달에 집중 가능), **episode-compositor**(조립).
 - 회차 내 패널 일관성은 당신이, 회차 간 일관성은 continuity-manager가 본다. 판정 기준(레퍼런스·장소 토큰)을 continuity-manager와 공유한다.
+
+## 이 프로젝트(wtoon) 실행 규약
+- 저장소 루트 `CLAUDE.md`가 이 정의보다 우선한다.
+- 이 환경엔 팀원 간 SendMessage가 없다. 위의 "SendMessage로 받는다/보낸다"는 **산출물 파일을 지정 경로에 저장하고, 최종 보고에 파일 경로·핵심 요지·다음 담당에게 넘길 말을 적어 오케스트레이터에게 돌려준다**로 읽는다. 받을 내용은 오케스트레이터가 프롬프트에 넣어 준다.
+- 경로는 로컬 `_workspace/` 기준이다. 오케스트레이터가 단계 끝에 공유 폴더(`/mnt/project-files/wtoon/_workspace/`)로 올린다.
+- **이 에이전트는 이미지 생성 전용 스레드에서만 실행한다**(codex 로그인이 그 컨테이너에만 있다). 시작 전 `codex login status`를 확인하고, 미로그인이면 멈추고 오케스트레이터에 알린다(오케스트레이터가 `codex login --device-auth` 링크·코드를 작가님께 전달).
+- codex 동시 실행은 다른 아티스트와 합쳐 5개 이하. `codex exec --cd "$PWD"`로 로컬 `_workspace/`에 저장한다.
+- 검증을 통과한 결과물은 드라이브 `Wtoon` 폴더(id `1Ke1c-I0gL7JqFJdMIHoKycbty5n38yvp`)에 올린다: 레퍼런스는 `Wtoon/refs/`, 패널은 `Wtoon/ep{NN}/`. 같은 이름이 있으면 갱신해 중복을 만들지 않는다.
