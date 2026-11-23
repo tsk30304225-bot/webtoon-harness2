@@ -93,7 +93,7 @@ codex-image의 배치 헬퍼가 임의 개수를 5장씩 자동 배치한다. �
 
 ```bash
 codex exec --sandbox workspace-write --skip-git-repo-check \
-  --cd /Users/robin/Downloads/webtoon-new \
+  --cd "$PWD" \
   -o /tmp/codex-ep{NN}-001.md \
   "이미지 생성 도구로 '<panel_001 프롬프트>' 이미지를 생성하고 ./_workspace/05_panels/ep{NN}/panel_001.png 로 저장. 파일 경로만 한 줄로 보고."
 # 같은 패턴으로 panel_002~panel_005를 각각 run_in_background:true 로 동시에. 총 5개.
@@ -121,7 +121,7 @@ ls -la _workspace/05_panels/ep{NN}/*.png
 file _workspace/05_panels/ep{NN}/*.png       # 모두 "PNG image data" 인지
 find _workspace/05_panels/ep{NN} -name '*.png' -size 0    # 0바이트 목록
 # md5 중복 검사 (서로 다른 패널이 동일 이미지로 저장되는 사고 — EP01에서 실제 발생)
-md5 -r _workspace/05_panels/ep{NN}/panel_*.png | awk '{print $1}' | sort | uniq -d   # 비면 중복 없음
+md5sum _workspace/05_panels/ep{NN}/panel_*.png | awk   # macOS: md5 -r '{print $1}' | sort | uniq -d   # 비면 중복 없음
 ```
 
 검증 결과 처리:
@@ -174,6 +174,15 @@ quality-reviewer가 FIX/REDO로 지정한 패널만 재렌더한다. 전체를 �
 
 - 각 codex 호출은 독립 세션 → 토큰·플랜 메시지 한도를 N배 소모한다.
 - 헤비 배치(50장+) 전 `codex login status`로 플랜 잔량을 확인한다.
+
+## 결과 보관 — Google Drive 업로드
+
+렌더는 작업 폴더(`_workspace/05_panels/ep{NN}/`)에서 하고, 검증을 통과한 결과물은 프로젝트에 연결된 Google Drive 폴더로 올린다. codex는 Drive에 직접 쓸 수 없으므로 로컬 렌더 → Drive 업로드 순서다.
+
+- 업로드 대상 폴더: **Wtoon** — https://drive.google.com/drive/folders/1Ke1c-I0gL7JqFJdMIHoKycbty5n38yvp (folder id `1Ke1c-I0gL7JqFJdMIHoKycbty5n38yvp`)
+- 하위 구조: `Wtoon/ep{NN}/panel_NNN.png`, 레퍼런스는 `Wtoon/refs/`, 완성 뷰어는 `Wtoon/RELEASE/ep{NN}/`.
+- 업로드는 Google Drive 커넥터(`create_file`, 상위 폴더 id 지정)로 한다. 하위 폴더가 없으면 먼저 만든다.
+- 재렌더한 패널은 같은 이름의 기존 파일을 갱신(`update_file`)해 중복 파일을 만들지 않는다.
 
 ## 출력
 
