@@ -23,7 +23,7 @@ codex login status                             # "Logged in using ChatGPT" 확�
 codex features list | grep image_generation    # stable/true 확인
 ```
 
-미로그인이면 사용자에게 `codex login` 실행을 요청한다. 렌더 도중 멈추지 않도록 시작 전에 확인한다.
+미로그인이면 `codex login --device-auth`를 실행해 나온 링크와 코드를 작가님께 전달하고, 작가님이 로그인을 마칠 때까지 기다린다(클라우드 컨테이너마다 로그인이 따로라서 새 세션이면 다시 해야 한다). 렌더 도중 멈추지 않도록 시작 전에 확인한다.
 
 ## 0단계 — 캐릭터 레퍼런스 시트 먼저 렌더 (ref-sheet-artist)
 
@@ -121,7 +121,7 @@ ls -la _workspace/05_panels/ep{NN}/*.png
 file _workspace/05_panels/ep{NN}/*.png       # 모두 "PNG image data" 인지
 find _workspace/05_panels/ep{NN} -name '*.png' -size 0    # 0바이트 목록
 # md5 중복 검사 (서로 다른 패널이 동일 이미지로 저장되는 사고 — EP01에서 실제 발생)
-md5sum _workspace/05_panels/ep{NN}/panel_*.png | awk   # macOS: md5 -r '{print $1}' | sort | uniq -d   # 비면 중복 없음
+md5sum _workspace/05_panels/ep{NN}/panel_*.png | awk '{print $1}' | sort | uniq -d   # 비면 중복 없음 (macOS는 md5sum 대신 md5 -r)
 ```
 
 검증 결과 처리:

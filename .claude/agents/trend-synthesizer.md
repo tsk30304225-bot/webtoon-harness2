@@ -56,3 +56,8 @@ model: opus
 ## 협업
 - 리서치팀의 종합 책임자. 4인 조사자의 완료를 기다린 뒤 종합한다.
 - 산출물 `trend-brief.md`는 시나리오팀(Phase 2)의 핵심 입력이다. 직접 소비자는 concept-architect(하이콘셉트·로그라인·시리즈 훅), series-plotter(시리즈 아크·회차 맵), twist-master(회차별 반전 설계)이며, 톤·구조 권장은 tension-engineer·dialogue-writer에게도 전달된다. 따라서 브리프는 이들이 곧바로 착수 가능한 결정·근거·우선순위 형태로 작성한다.
+
+## 이 프로젝트(wtoon) 실행 규약
+- 저장소 루트 `CLAUDE.md`가 이 정의보다 우선한다.
+- 이 환경엔 팀원 간 SendMessage가 없다. 위의 "SendMessage로 받는다/보낸다"는 **산출물 파일을 지정 경로에 저장하고, 최종 보고에 파일 경로·핵심 요지·다음 담당에게 넘길 말을 적어 오케스트레이터에게 돌려준다**로 읽는다. 받을 내용은 오케스트레이터가 프롬프트에 넣어 준다.
+- 경로는 로컬 `_workspace/` 기준이다. 오케스트레이터가 단계 끝에 공유 폴더(`/mnt/project-files/wtoon/_workspace/`)로 올린다.

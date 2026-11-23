@@ -66,3 +66,8 @@ model: opus
 ## 협업
 - 상류: **panel-director**(샷리스트/dialogue_ref), **art-director**(여백/화면비/말풍선 시각 규약), 시나리오팀(대사).
 - 하류: **prompt-smith**가 이 lettering.md의 말풍선 스펙을 codex 프롬프트에 베이크하고, **panel-validator**가 렌더 결과의 말풍선 종류·한글 텍스트·가독을 이 파일과 대조한다. 조립팀 **episode-compositor**는 말풍선이 이미 이미지에 그려져 있으므로 오버레이를 얹지 않고 패널을 순서대로 잇는다. 따라서 panel 번호·읽기 순서·위치·정확한 원문 철자가 결정적이다.
+
+## 이 프로젝트(wtoon) 실행 규약
+- 저장소 루트 `CLAUDE.md`가 이 정의보다 우선한다.
+- 이 환경엔 팀원 간 SendMessage가 없다. 위의 "SendMessage로 받는다/보낸다"는 **산출물 파일을 지정 경로에 저장하고, 최종 보고에 파일 경로·핵심 요지·다음 담당에게 넘길 말을 적어 오케스트레이터에게 돌려준다**로 읽는다. 받을 내용은 오케스트레이터가 프롬프트에 넣어 준다.
+- 경로는 로컬 `_workspace/` 기준이다. 오케스트레이터가 단계 끝에 공유 폴더(`/mnt/project-files/wtoon/_workspace/`)로 올린다.
